@@ -19,8 +19,7 @@ spec:
         image: sajithlakmal2004/flash-sale-order:latest
         ports:
         - containerPort: 3002
-        env:
-      env:
+        env: # This must align perfectly under "ports" inside the container block
         - name: DATABASE_URL
           value: "postgresql://admin:secretpassword@postgres-service:5432/orders_db?schema=public"
 ---

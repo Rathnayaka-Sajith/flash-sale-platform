@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  labels:
+    app: order
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+      - name: order-service
+        image: sajithlakmal2004/flash-sale-order:latest
+        ports:
+        - containerPort: 3002
+        env:
+        - name: DATABASE_URL
+          # Note: In a production cluster, this would point to an internal K8s database pod
+          value: "postgresql://admin:secretpassword@host.docker.internal:5433/orders_db?schema=public"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002

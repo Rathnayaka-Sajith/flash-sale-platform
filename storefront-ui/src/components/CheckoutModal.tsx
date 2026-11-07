@@ -24,7 +24,7 @@ interface CheckoutModalProps {
   purchasedOrders: PurchasedOrder[];
   onUpdateQuantity: (productId: string, delta: number) => void;
   onRemoveItem: (productId: string) => void;
-  onConfirmPurchase: () => string; // returns generated order ID
+  onConfirmPurchase: () => Promise<string>; // Updated to expect an async Promise
 }
 
 export default function CheckoutModal({
@@ -58,14 +58,15 @@ export default function CheckoutModal({
   );
   const totalSavings = subtotalOriginal - subtotalSale;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (items.length === 0) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      const orderId = onConfirmPurchase();
-      setIsSubmitting(false);
-      setConfirmedOrderId(orderId);
-    }, 350);
+    
+    // Await the actual network request to the microservices
+    const orderId = await onConfirmPurchase();
+    
+    setIsSubmitting(false);
+    setConfirmedOrderId(orderId);
   };
 
   const handleCloseModal = () => {

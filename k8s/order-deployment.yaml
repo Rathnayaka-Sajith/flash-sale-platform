@@ -20,9 +20,9 @@ spec:
         ports:
         - containerPort: 3002
         env:
+      env:
         - name: DATABASE_URL
-          # Note: In a production cluster, this would point to an internal K8s database pod
-          value: "postgresql://admin:secretpassword@host.docker.internal:5433/orders_db?schema=public"
+          value: "postgresql://admin:secretpassword@postgres-service:5432/orders_db?schema=public"
 ---
 apiVersion: v1
 kind: Service

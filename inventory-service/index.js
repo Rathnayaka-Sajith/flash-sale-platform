@@ -6,12 +6,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to the local Docker Redis container
-const redisClient = createClient({ url: 'redis://localhost:6379' });
+// Connect to Redis using the Kubernetes environment variable, fallback to localhost for local dev
+const redisClient = createClient({ 
+  url: process.env.REDIS_URL || 'redis://localhost:6379' 
+});
+
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
 redisClient.connect().then(() => {
-    console.log('✅ Redis connected successfully');
+  console.log('✅ Redis connected successfully');
 });
 
 // Endpoint to check current stock
@@ -47,7 +50,7 @@ app.post('/api/inventory/buy/:productId', async (req, res) => {
   res.json({ success: true, message: 'Item secured!', remainingStock });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`🚀 Inventory Microservice running on http://localhost:${PORT}`);
+  console.log(`🚀 Inventory Microservice running on port ${PORT}`);
 });

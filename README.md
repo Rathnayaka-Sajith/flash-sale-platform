@@ -51,6 +51,9 @@ flash-sale-platform/
     ├── redis-deployment.yaml
     └── ingress.yaml        # Traefik routing rules
 
+
+---
+
 ## 📂 About Developer
 
 Sajith Lakmal

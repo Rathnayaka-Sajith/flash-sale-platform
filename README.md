@@ -38,7 +38,6 @@ A portfolio-grade, high-velocity e-commerce flash sale platform designed to hand
 
 ## 📂 Repository Structure
 
-```text
 flash-sale-platform/
 ├── frontend-service/       # Next.js UI & client-side rendering
 ├── inventory-service/      # Atomic Redis stock management
@@ -51,6 +50,23 @@ flash-sale-platform/
     ├── redis-deployment.yaml
     └── ingress.yaml        # Traefik routing rules
 
+
+---
+
+## 🧠 Engineering Challenges & Solutions
+During the deployment of this architecture, several critical infrastructure challenges were resolved:
+
+Prisma & Alpine Linux OpenSSL Incompatibility:
+
+Issue: The order-service entered a CrashLoopBackOff because Prisma's query engine failed to find libssl.so.1.1 in standard Alpine containers.
+
+Solution: Refactored the Dockerfile to use node:18-bookworm-slim (Debian 12), ensuring native OpenSSL 3.x compatibility and stable ORM connections while maintaining a small image footprint.
+
+Kubernetes Internal Networking (Redis ECONNREFUSED):
+
+Issue: Node.js microservices defaulted to localhost:6379 for Redis, causing connection refusals in an isolated pod environment.
+
+Solution: Rewrote the Node.js initialization code to dynamically accept process.env.REDIS_URL and implemented K8s internal DNS routing (redis://redis-service:6379), securely bridging the application pod to the database pod.
 
 ---
 
